@@ -6,6 +6,12 @@ import { useDrinksStore } from '../stores/drinks'
 const route = useRoute()
 const store = useDrinksStore()
 
+const handleSubmit = () => {
+  // Validate
+  
+  store.getRecipes()
+}
+
 const homePage = computed(() => route.name === 'home')
 </script>
 
@@ -28,7 +34,7 @@ const homePage = computed(() => route.name === 'home')
         </nav>
       </div>
 
-      <form action="" class="md:w-1/2 2xl:w-1/3 bg-orange-400 my-32 p-10 rounded-lg shadow space-y-6" v-if="homePage">
+      <form action="" class="md:w-1/2 2xl:w-1/3 bg-orange-400 my-32 p-10 rounded-lg shadow space-y-6" v-if="homePage" @submit.prevent="handleSubmit">
         <div class="space-y-4">
           <label for="ingredient" class="block text-white uppercase font-extrabold text-lg">
             Name or Ingredients
@@ -38,6 +44,7 @@ const homePage = computed(() => route.name === 'home')
             id="ingredient"
             class="p-3 w-full rounded-lg focus:outline-none"
             placeholder="e.g. Vodka, Whiskey, etc"
+            v-model="store.search.name"
           />
         </div>
 
@@ -45,7 +52,7 @@ const homePage = computed(() => route.name === 'home')
           <label for="category" class="block text-white uppercase font-extrabold text-lg">
             Category
           </label>
-          <select id="category" class="p-3 w-full rounded-lg focus:outline-none">
+          <select id="category" class="p-3 w-full rounded-lg focus:outline-none" v-model="store.search.category">
             <option value="" disabled selected>--Select an option--</option>
             <option v-for="category in store.categories" :key="category.strCategory" :value="category.strCategory">
               {{ category.strCategory }}
