@@ -8,19 +8,22 @@ export const useDrinksStore = defineStore('drinks', () => {
     name: '',
     category: '',
   })
+  const recipes = ref({})
 
   onMounted(async () => {
     const { data: { drinks } } = await APIService.getCategories()
     categories.value = drinks
   })
 
-  function getRecipes() {
-    console.log('Calling API')
+  async function getRecipes() {
+    const { data: { drinks } } = await APIService.searchRecipes(search)
+    recipes.value = drinks
   }
 
   return {
     categories,
     search,
+    recipes,
     getRecipes,
   }
 })
