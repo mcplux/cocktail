@@ -1,13 +1,32 @@
 <script setup>
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { useModalStore } from '../stores/modal'
+import { useDrinksStore } from '../stores/drinks'
 
 const modalStore = useModalStore()
+const drinksStore = useDrinksStore()
+
+const formatIngredients = () => {
+  const div = document.createElement('DIV')
+  for(let i = 1; i <= 15; i++){
+    if(drinksStore.recipe[`strIngredient${i}`]) {
+      const ingredient = drinksStore.recipe[`strIngredient${i}`]
+      const amount = drinksStore.recipe[`strMeasure${i}`]
+
+      const p = document.createElement('P')
+      p.classList.add('text-lg', 'text-gray-500')
+      p.textContent = `${ingredient}${amount ? " - " + amount : ""}`
+      div.appendChild(p)
+    }
+  }
+
+  return div
+}
 </script>
 
 <template>
     <TransitionRoot as="template" :show="modalStore.modal" >
-      <Dialog as="div" class="relative z-10">
+      <Dialog as="div" class="relative z-10" @close="modalStore.handleClickModal()">
         <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
           <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </TransitionChild>
@@ -17,14 +36,38 @@ const modalStore = useModalStore()
               <DialogPanel class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-6" >
                 <div>
                   <div class="mt-3">
+                    <DialogTitle as="h3" class="text-gray-900 text-4xl font-extrabold my-5">
+                      {{ drinksStore.recipe.strDrink }}
+                    </DialogTitle>
 
+                    <img
+                      :src="drinksStore.recipe.strDrinkThumb"
+                      :alt="drinksStore.recipe.strDrink"
+                      class="mx-auto w-96"
+                    />
 
+                    <DialogTitle as="h3" class="text-gray-900 text-4xl font-extrabold my-5">
+                      Ingredients
+                    </DialogTitle>
 
+                    <div v-html="formatIngredients().outerHTML"></div>
+
+                    <DialogTitle as="h3" class="text-gray-900 text-4xl font-extrabold my-5">
+                      Instructions
+                    </DialogTitle>
+
+                    <p class="text-lg text-gray-500">{{ drinksStore.recipe.strInstructions }}</p>
                   </div>
                 </div>
                 <div class="mt-5 sm:mt-6 flex justify-between gap-4">
-
-                </div> 
+                  <button
+                    type="button"
+                    class="w-full rounded bg-gray-600 p-3 font-bold uppercase text-white shadow hover:bg-gray-500"
+                    @click="modalStore.handleClickModal()"
+                  >
+                    Close
+                  </button>
+                </div>
               </DialogPanel>
             </TransitionChild>
           </div>
@@ -32,4 +75,3 @@ const modalStore = useModalStore()
       </Dialog>
     </TransitionRoot>
 </template>
-  
