@@ -10,7 +10,9 @@ const drinksStore = useDrinksStore()
     Recipes
   </h1>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 my-10 gap-10">
+  <p class="my-10 text-center text-2xl" v-if="drinksStore.noRecipes">No results</p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 my-10 gap-10" v-else>
     <Recipe 
       v-for="recipe in drinksStore.recipes"
       :recipe="recipe"

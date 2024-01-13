@@ -24,11 +24,11 @@ const homePage = computed(() => route.name === 'home')
             <img class="w-32" src="/img/logo.svg" alt="Logo">
           </RouterLink>
         </div>
-        <nav class="flex gap-4">
-          <RouterLink :to="{name: 'home'}" class="text-white uppercase font-bold" active-class="text-orange-500">
+        <nav class="flex gap-4 text-white">
+          <RouterLink :to="{name: 'home'}" class="uppercase font-bold" active-class="text-orange-500">
             Home
           </RouterLink>
-          <RouterLink :to="{name: 'favorites'}" class="text-white uppercase font-bold" active-class="text-orange-500">
+          <RouterLink :to="{name: 'favorites'}" class="uppercase font-bold" active-class="text-orange-500">
             Favorites
           </RouterLink>
         </nav>

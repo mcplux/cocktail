@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia'
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import { useDrinksStore } from './drinks'
+import { useModalStore } from './modal'
 
 export const useFavoritesStore = defineStore('favorites', () => {
   const drinksStore = useDrinksStore()
+  const modalStore = useModalStore()
 
   const favorites = ref([])
+
+  onMounted(() => {
+    favorites.value = JSON.parse(localStorage.getItem('favorites')) ?? []
+  })
 
   watch(favorites, () => {
     saveLocalStorage()
@@ -13,16 +19,39 @@ export const useFavoritesStore = defineStore('favorites', () => {
     deep: true,
   })
 
-  const saveLocalStorage = () => {
+  function saveLocalStorage() {
     localStorage.setItem('favorites', JSON.stringify(favorites.value))
   }
 
-  const handleClickFavorites = () => {
+  function existsInFavorites() {
+    const favoritesLocalStorage = JSON.parse(localStorage.getItem('favorites')) ?? []
+
+    return favoritesLocalStorage.some(favorite => favorite.idDrink === drinksStore.recipe.idDrink)
+  }
+
+  function saveFavorite() {
     favorites.value.push(drinksStore.recipe)
+  }
+
+  function deleteFavorite() {
+    favorites.value = favorites.value.filter(favorite => favorite.idDrink !== drinksStore.recipe.idDrink)
+  }
+
+  function handleClickFavorites() {
+    if(existsInFavorites()) {
+      deleteFavorite()
+    } else {
+      saveFavorite()
+    }
+    modalStore.modal = false
   } 
+
+  const noFavorites = computed(() => favorites.value.length === 0)
 
   return {
     favorites,
     handleClickFavorites,
+    existsInFavorites,
+    noFavorites,
   }
 })
